@@ -100,7 +100,24 @@ pipeline {
         }
       }
     }
-
+    stage('Image Analysis') {
+      parallel {
+        stage('Image Linting') {
+          steps {
+            container('docker-tools') {
+              sh 'dockle docker.io/jerry871002/dso-demo'
+            }
+          }
+        }
+        stage('Image Scan') {
+          steps {
+            container('docker-tools') {
+              sh 'trivy image --timeout 10m --exit-code 1 jerry871002/dso-demo'
+            }
+          }
+        }
+      }
+    }
     stage('Deploy to Dev') {
       steps {
         // TODO
