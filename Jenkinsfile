@@ -42,6 +42,19 @@ pipeline {
             }
           }
         }
+        stage('OSS License Checker') {
+          steps {
+            container('licensefinder') {
+              sh 'ls -al'
+              sh '''#!/bin/bash --login
+                      /bin/bash --login
+                      rvm use default
+                      gem install license_finder
+                      license_finder
+                  '''
+            }
+          }
+        }
       }
     }
     stage('Package') {
@@ -56,8 +69,6 @@ pipeline {
         stage('OCI Image BnP') {
           steps {
             container('kaniko') {
-              sh 'ls -al /kaniko/.docker'
-              sh 'cat /kaniko/.docker/config.json'
               sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=docker.io/jerry871002/dso-demo'
             }
           }
