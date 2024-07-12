@@ -94,6 +94,8 @@ pipeline {
         stage('OCI Image BnP') {
           steps {
             container('kaniko') {
+              sh 'ls -al /kaniko/.docker'
+              sh 'cat /kaniko/.docker/config.json'
               sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=docker.io/jerry871002/dso-demo'
             }
           }
