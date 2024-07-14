@@ -6,8 +6,8 @@ metadata:
     app: dso-demo
   name: dso-demo
   annotations:
-    container.apparmor.security.beta.kubernetes.io/nginx:
-    container.seccomp.security.alpha.kubernetes.io/pod:
+    apparmor.security.beta.kubernetes.io/nginx:
+    seccomp.security.alpha.kubernetes.io/pod: "runtime/default"
 spec:
   replicas: 1
   selector:
@@ -19,8 +19,11 @@ spec:
       creationTimestamp: null
       labels:
         app: dso-demo
+      annotations:
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/role: 'dso-demo'
+        vault.hashicorp.com/agent-inject-secret-database: 'secret/data/dso-demo'
     spec:
-      automountServiceAccountToken: false
       serviceAccountName: dso-demo
       containers:
       - image: jerry871002/dso-demo
